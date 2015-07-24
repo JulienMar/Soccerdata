@@ -21,4 +21,10 @@ clean_team = []
 for x in teams:
     clean_team.append(re.sub('<[^<]+?>', '', str(x)))
 
-print(clean_team)
+all_players = soup.find_all('span', id=lambda x: x and x.startswith('player-id'))
+
+clean_all_players = []
+for y in all_players:
+    clean_all_players.append(re.sub('<[^<]+?>', '', str(y)))
+
+print(len(clean_all_players))
