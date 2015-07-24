@@ -21,6 +21,8 @@ clean_team = []
 for x in teams:
     clean_team.append(re.sub('<[^<]+?>', '', str(x)))
 
+print(clean_team)
+
 players = soup.find_all('ul', class_ = "player-list")
 
 players = [str(x) for x in players]
