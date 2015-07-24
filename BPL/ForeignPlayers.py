@@ -9,7 +9,7 @@ def getReports(scoreLinks):
     return tree.xpath('//a[@class="report"]/@href')
 
 def matchReport(matchlink):
-    link = 'http://www.bbc.com/sport/0/football' + matchlink[-8:]
+    link = 'http://www.bbc.com/sport/0/football/' + matchlink[-8:]
     matchPage = requests.get(link)
     data = matchPage.text
     return BeautifulSoup(data, "lxml")
@@ -28,12 +28,27 @@ def getAllPlayers(soccerSoup):
     players = [re.sub('<[^<]+?>', '', y) for y in players]
     players = [s.split() for s in players]
     players = [ x for y in players for x in y]
-
     players = [y for y in players if not y.isdigit() and y != 'Booked']
 
     return players
 
+def getHomePlayers(soccerSoup):
+    players = getAllPlayers(soccerSoup)
+    return (players[:11])
+
+def getAwayPlayers(soccerSoup):
+    players = getAllPlayers(soccerSoup)
+    return (players[11:])
+
+def getPlayersPerTeam(soccerSoup):
+    playersPerTeam = {}
+    teams = getTeams(soccerSoup)
+    playersPerTeam[teams[0]] = getHomePlayers(soccerSoup)
+    playersPerTeam[teams[1]] = getAwayPlayers(soccerSoup)
+    return playersPerTeam
+
 reports = getReports('http://www.bbc.com/sport/football/premier-league/results')
+
 oneReport = matchReport(reports[0])
-print(getTeams(oneReport))
-print(getAllPlayers(oneReport))
+
+print(getPlayersPerTeam(oneReport))
