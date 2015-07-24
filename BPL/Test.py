@@ -21,10 +21,15 @@ clean_team = []
 for x in teams:
     clean_team.append(re.sub('<[^<]+?>', '', str(x)))
 
-all_players = soup.find_all('span', id=lambda x: x and x.startswith('player-id'))
+players = soup.find_all('ul', class_ = "player-list")
 
-clean_all_players = []
-for y in all_players:
-    clean_all_players.append(re.sub('<[^<]+?>', '', str(y)))
+players = [str(x) for x in players]
+players = [re.sub(r'\([^)]*\)', '', y) for y in players]
+players = [re.sub('<[^<]+?>', '', y) for y in players]
+players = [s.split() for s in players]
+players = [ x for y in players for x in y]
 
-print(len(clean_all_players))
+players = [y for y in players if not y.isdigit() and y != 'Booked']
+
+print(players)
+
