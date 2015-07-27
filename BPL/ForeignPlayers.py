@@ -35,7 +35,13 @@ def getAllPlayers(soccerSoup):
     players = [ x for y in players for x in y]
     players = [y for y in players if not y.isdigit() and y != 'Booked']
 
+    players = [cleanPlayer(y) for y in players]
     return players
+
+def cleanPlayer(name):
+    name = name.replace("Ã\x96", "Ö")
+    name = name.replace("Ãi", "à")
+    return name
 
 def getHomePlayers(soccerSoup):
     players = getAllPlayers(soccerSoup)
@@ -64,3 +70,26 @@ def getPlayerCountry(playerId):
     playerSoup = getSoup(link)
     return playerSoup.find('span', class_=re.compile(r"flag*"))['title']
 
+def smallGetCountry(playerName):
+    playerId = getPlayerId(playerName)
+    return getPlayerCountry(playerId)
+
+def getCountries(players):
+    countries = {}
+    for player in players:
+        country = smallGetCountry(player)
+        if country in countries:
+            countries[country] += 1
+
+        else:
+            countries[country] = 1
+    return countries
+
+#reports = getReports("http://www.bbc.com/sport/football/premier-league/results")
+#match = matchReport(reports[0])
+
+#print(getAllPlayers(match))
+
+players = ['Ospina', 'Bellerin', 'Mertesacker', 'Gabriel', 'Gibbs', 'Cazorla', 'Coquelin', 'Wilshere', 'Özil', 'Walcott', 'Myhill', 'Dawson', 'McAuley', 'Olsson', 'Lescott', 'Fletcher', 'Yacob', 'Morrison', 'McManaman', 'Berahino', 'Brunt']
+
+print(getCountries(players))
