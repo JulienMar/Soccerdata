@@ -47,8 +47,11 @@ def getPlayersPerTeam(soccerSoup):
     playersPerTeam[teams[1]] = getAwayPlayers(soccerSoup)
     return playersPerTeam
 
-reports = getReports('http://www.bbc.com/sport/football/premier-league/results')
-
-oneReport = matchReport(reports[0])
-
-print(getPlayersPerTeam(oneReport))
+def getPlayerId(playerName):
+    link = "http://www.soccerwiki.org/wiki.php?action=search&searchType=all&q=" + playerName
+    searchPage = requests.get(link)
+    data = searchPage.text
+    searchSoup = BeautifulSoup(data, "lxml")
+    for a in searchSoup.find_all('a', href=True):
+        if "pid" in a['href']:
+            return a['href']
