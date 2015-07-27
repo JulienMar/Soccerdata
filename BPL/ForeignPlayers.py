@@ -55,3 +55,12 @@ def getPlayerId(playerName):
     for a in searchSoup.find_all('a', href=True):
         if "pid" in a['href']:
             return a['href']
+
+def getPlayerCountry(playerId):
+    link = "http://www.soccerwiki.org/" + playerId
+    playerPage = requests.get(link)
+    data = playerPage.text
+    playerSoup = BeautifulSoup(data, "lxml")
+
+    return playerSoup.find('span', class_=re.compile(r"flag*"))['title']
+
