@@ -3,6 +3,13 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+#I'M AT THE SOUP STORE!
+def getSoup(link):
+    page = requests.get(link)
+    data = page.text
+    return BeautifulSoup(data, "lxml")
+
+#Reports link: http://www.bbc.com/sport/football/premier-league/results
 def getReports(scoreLinks):
     page = requests.get(scoreLinks)
     tree = html.fromstring(page.text)
@@ -10,9 +17,7 @@ def getReports(scoreLinks):
 
 def matchReport(matchlink):
     link = 'http://www.bbc.com/sport/0/football/' + matchlink[-8:]
-    matchPage = requests.get(link)
-    data = matchPage.text
-    return BeautifulSoup(data, "lxml")
+    return getSoup(link)
 
 #First one is the home team, second one the away team
 def getTeams(soccerSoup):
@@ -49,18 +54,13 @@ def getPlayersPerTeam(soccerSoup):
 
 def getPlayerId(playerName):
     link = "http://www.soccerwiki.org/wiki.php?action=search&searchType=all&q=" + playerName
-    searchPage = requests.get(link)
-    data = searchPage.text
-    searchSoup = BeautifulSoup(data, "lxml")
+    searchSoup = getSoup(link)
     for a in searchSoup.find_all('a', href=True):
         if "pid" in a['href']:
             return a['href']
 
 def getPlayerCountry(playerId):
     link = "http://www.soccerwiki.org/" + playerId
-    playerPage = requests.get(link)
-    data = playerPage.text
-    playerSoup = BeautifulSoup(data, "lxml")
-
+    playerSoup = getSoup(link)
     return playerSoup.find('span', class_=re.compile(r"flag*"))['title']
 
